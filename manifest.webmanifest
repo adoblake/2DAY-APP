@@ -1,0 +1,9 @@
+{
+  "name": "2DAY",
+  "short_name": "2DAY",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#070707",
+  "theme_color": "#070707",
+  "description": "A timeframe-focused daily meal journey."
+}
