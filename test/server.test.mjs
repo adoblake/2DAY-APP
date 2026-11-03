@@ -24,7 +24,8 @@ test('application serves public assets and protects private files', async t => {
   const base = output.match(/http:\/\/localhost:\d+/)[0];
   const html = await (await fetch(base)).text();
   assert.match(html, /homeView/);
-  assert.match(html, /calendarYes/);
+  assert.match(html, /calendarEventLinks/);
+  assert.doesNotMatch(html, /DOWNLOAD ONE-TIME/);
   const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
   new vm.Script(script);
   assert.deepEqual(await (await fetch(base+'/api/status')).json(), {server:true,sms:false,email:false});
@@ -39,6 +40,17 @@ test('application serves public assets and protects private files', async t => {
   assert.equal((await fetch(base+'/api/progress',{method:'POST',body:JSON.stringify(progress)})).status,200);
   const saved=JSON.parse(await readFile(join(dir,'data.json'),'utf8'));
   assert.equal(saved.profiles['test-journey'].progress.days['2026-11-02'].done.morning,true);
+  const token='ab'.repeat(32),headers={Authorization:'Bearer '+token};
+  const plan={started:'2026-11-01',ends:'2026-11-03',timeZone:'America/Phoenix'};
+  assert.equal((await fetch(base+'/api/calendar',{method:'POST',headers,body:JSON.stringify(plan)})).status,200);
+  let feed=await (await fetch(base+'/calendar/'+token+'.ics')).text();
+  assert.equal((feed.match(/BEGIN:VEVENT/g)||[]).length,9);
+  assert.equal((await fetch(base+'/api/calendar',{method:'PUT',headers,body:JSON.stringify({...plan,ends:'2026-11-04'})})).status,200);
+  feed=await (await fetch(base+'/calendar/'+token+'.ics')).text();assert.equal((feed.match(/BEGIN:VEVENT/g)||[]).length,12);
+  assert.equal((await fetch(base+'/calendar/'+'cd'.repeat(32)+'.ics')).status,404);
+  assert.equal((await fetch(base+'/api/calendar',{method:'PUT',body:JSON.stringify(plan)})).status,401);
+  assert.equal((await fetch(base+'/api/calendar',{method:'DELETE',headers})).status,200);
+  assert.equal((await fetch(base+'/calendar/'+token+'.ics')).status,404);
   const sms=await (await fetch(base+'/api/test-sms',{method:'POST',body:JSON.stringify({phone:'+16025550123'})})).json();
   assert.equal(sms.sent,false);
 });

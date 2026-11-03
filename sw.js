@@ -1,5 +1,5 @@
-const CACHE = '2day-v10.1';
-const SHELL = ['./', './index.html', './manifest.webmanifest'];
+const CACHE = '2day-v12-free-calendar';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './assets/programs.js', './assets/share.js', './assets/calendar.js', './assets/calendar-links.js', './assets/vendor/qrcode.js'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
 });
@@ -10,7 +10,7 @@ self.addEventListener('activate', event => {
 });
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
-  if (event.request.method !== 'GET' || url.origin !== self.location.origin || url.pathname.startsWith('/api/')) return;
+  if (event.request.method !== 'GET' || url.origin !== self.location.origin || (url.pathname.startsWith('/api/') || url.pathname.includes('/calendar/'))) return;
   event.respondWith(fetch(event.request).then(response => {
     if (response.ok) {
       const copy = response.clone();

@@ -1,4 +1,5 @@
 import http from 'node:http';
+import {calendarPlan,calendarFeed,tokenKey,validToken} from './calendar.mjs';
 import { readFile, writeFile, stat } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -77,10 +78,28 @@ let ticking=false;
 async function runTick(){if(ticking)return;ticking=true;try{await tick()}catch{console.error('Notification scheduler failed')}finally{ticking=false}}
 setInterval(runTick,60000);runTick();
 
-const publicFiles=new Set(['/index.html','/sw.js','/manifest.webmanifest','/assets/home-source.svg','/assets/day-source.svg']);
+const publicFiles=new Set(['/index.html','/sw.js','/manifest.webmanifest','/assets/home-source.svg','/assets/day-source.svg','/assets/programs.js','/assets/share.js','/assets/calendar.js','/assets/calendar-links.js','/assets/vendor/qrcode.js']);
 const mime={'.svg':'image/svg+xml','.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.webmanifest':'application/manifest+json'};
 const server=http.createServer(async(req,res)=>{
   try{
+    const calendarUrl=new URL(req.url,'http://localhost');
+    const feedMatch=calendarUrl.pathname.match(/^\/calendar\/([a-f0-9]{64})\.ics$/);
+    if(feedMatch&&['GET','HEAD'].includes(req.method)){
+      const key=tokenKey(feedMatch[1]),plan=db.calendars?.[key];
+      if(!plan)return json(res,404,{error:'Calendar unavailable'});
+      res.writeHead(200,{'Content-Type':'text/calendar; charset=utf-8','Cache-Control':'no-store','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff'});
+      return res.end(req.method==='HEAD'?undefined:calendarFeed(plan,key));
+    }
+    if(calendarUrl.pathname==='/api/calendar'&&['POST','PUT','DELETE'].includes(req.method)){
+      const token=req.headers.authorization?.replace(/^Bearer /,'');
+      if(!validToken(token))return json(res,401,{error:'Calendar access token required'});
+      const key=tokenKey(token);db.calendars??={};
+      if(req.method==='DELETE'){delete db.calendars[key];await save();return json(res,200,{ok:true})}
+      if(req.method==='POST'&&db.calendars[key])return json(res,409,{error:'Calendar already exists'});
+      if(req.method==='PUT'&&!db.calendars[key])return json(res,404,{error:'Calendar unavailable'});
+      let plan;try{plan=calendarPlan(await body(req))}catch{return json(res,400,{error:'Valid dates and timezone required'})}
+      db.calendars[key]={...plan,updatedAt:Date.now()};await save();return json(res,200,{ok:true});
+    }
     if(req.method==='GET'&&req.url==='/api/status')return json(res,200,{server:true,sms:!!(process.env.TWILIO_ACCOUNT_SID&&process.env.TWILIO_AUTH_TOKEN&&process.env.TWILIO_FROM_NUMBER),email:!!(process.env.RESEND_API_KEY&&process.env.EMAIL_FROM)});
     if(req.method==='POST'&&req.url==='/api/register'){
       const x=await body(req);if(!x.journeyId)return json(res,400,{error:'journeyId required'});
