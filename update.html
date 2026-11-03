@@ -1,12 +1,12 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Update 2DAY</title><style>body{margin:0;background:#070707;color:#f3f3f0;font:16px/1.6 system-ui,sans-serif;display:grid;min-height:100vh;place-items:center}main{max-width:430px;padding:28px}h1{color:#ff9d00}a{color:#ff9d00}</style></head><body><main><h1>Refreshing 2DAY</h1><p id="status" role="status">Updating the app files. Your saved profile and progress stay on this device.</p><a id="continue" href="./index.html?release=12.0.2" hidden>Open updated 2DAY</a></main><script>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Update 2DAY</title><style>body{margin:0;background:#070707;color:#f3f3f0;font:16px/1.6 system-ui,sans-serif;display:grid;min-height:100vh;place-items:center}main{max-width:430px;padding:28px}h1{color:#ff9d00}a{color:#ff9d00}</style></head><body><main><h1>Refreshing 2DAY</h1><p id="status" role="status">Updating the app files. Your saved profile and progress stay on this device.</p><a id="continue" href="./index.html?release=12.1.0" hidden>Open updated 2DAY</a></main><script>
 (async()=>{
  const status=document.getElementById('status'),link=document.getElementById('continue');
  try{
   const scope=new URL('./',location.href).href;
   if('serviceWorker' in navigator){const registrations=await navigator.serviceWorker.getRegistrations();await Promise.all(registrations.filter(r=>r.scope===scope).map(r=>r.unregister()));}
   if('caches' in window){const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith('2day-')).map(k=>caches.delete(k)));}
-  location.replace(new URL('./index.html?release=12.0.2',location.href).href);
+  location.replace(new URL('./index.html?release=12.1.0',location.href).href);
  }catch{status.textContent='Automatic refresh was unavailable. Open the updated app below. Your profile and progress have not been cleared.';link.hidden=false;}
 })();
 </script></body></html>

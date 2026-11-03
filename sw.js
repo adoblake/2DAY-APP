@@ -1,5 +1,5 @@
-const CACHE = '2day-v12.0.2-guidance-modal';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './assets/programs.js', './assets/share.js', './assets/calendar.js', './assets/calendar-links.js', './assets/app-update.js', './assets/program-acceptance.js', './assets/vendor/qrcode.js'];
+const CACHE = '2day-v12.1.0-rising-bars';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './assets/icons/app-icon.svg', './assets/icons/apple-touch-icon.png', './assets/icons/icon-192.png', './assets/icons/icon-512.png', './assets/icons/icon-maskable-512.png', './assets/icons/favicon-32.png', './assets/icons/favicon-16.png', './assets/programs.js', './assets/share.js', './assets/calendar.js', './assets/calendar-links.js', './assets/app-update.js', './assets/program-acceptance.js', './assets/vendor/qrcode.js'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL.map(path => new Request(path, {cache:'reload'})))).then(() => self.skipWaiting()));
 });
