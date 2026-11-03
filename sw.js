@@ -1,7 +1,7 @@
-const CACHE = '2day-v12-free-calendar';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './assets/programs.js', './assets/share.js', './assets/calendar.js', './assets/calendar-links.js', './assets/vendor/qrcode.js'];
+const CACHE = '2day-v12.0.1-free-calendar';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './assets/programs.js', './assets/share.js', './assets/calendar.js', './assets/calendar-links.js', './assets/app-update.js', './assets/vendor/qrcode.js'];
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL.map(path => new Request(path, {cache:'reload'})))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', event => {
   event.waitUntil(caches.keys().then(keys => Promise.all(
@@ -10,8 +10,8 @@ self.addEventListener('activate', event => {
 });
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
-  if (event.request.method !== 'GET' || url.origin !== self.location.origin || (url.pathname.startsWith('/api/') || url.pathname.includes('/calendar/'))) return;
-  event.respondWith(fetch(event.request).then(response => {
+  if (event.request.method !== 'GET' || url.origin !== self.location.origin || (url.pathname.startsWith('/api/') || url.pathname.includes('/calendar/') || url.pathname.endsWith('/update.html'))) return;
+  event.respondWith(fetch(event.request, {cache:'no-cache'}).then(response => {
     if (response.ok) {
       const copy = response.clone();
       event.waitUntil(caches.open(CACHE).then(cache => cache.put(event.request, copy)));

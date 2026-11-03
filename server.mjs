@@ -78,7 +78,7 @@ let ticking=false;
 async function runTick(){if(ticking)return;ticking=true;try{await tick()}catch{console.error('Notification scheduler failed')}finally{ticking=false}}
 setInterval(runTick,60000);runTick();
 
-const publicFiles=new Set(['/index.html','/sw.js','/manifest.webmanifest','/assets/home-source.svg','/assets/day-source.svg','/assets/programs.js','/assets/share.js','/assets/calendar.js','/assets/calendar-links.js','/assets/vendor/qrcode.js']);
+const publicFiles=new Set(['/index.html','/update.html','/assets/app-update.js','/sw.js','/manifest.webmanifest','/assets/home-source.svg','/assets/day-source.svg','/assets/programs.js','/assets/share.js','/assets/calendar.js','/assets/calendar-links.js','/assets/vendor/qrcode.js']);
 const mime={'.svg':'image/svg+xml','.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.webmanifest':'application/manifest+json'};
 const server=http.createServer(async(req,res)=>{
   try{

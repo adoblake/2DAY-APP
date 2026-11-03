@@ -59,3 +59,7 @@ Fitness days, start time, duration, and provider preferences are saved on this d
 Apple Calendar can display a Google or Microsoft account enabled on the device. Direct iCloud-only event adding is not supported. The old subscription endpoints remain on the optional Node server solely for older consumers, but the active UI does not call them or offer them as editable calendar integration.
 
 Use the GitHub Pages URL for access and QR sharing. The optional Node server is still needed only for provider-backed messaging and legacy subscriptions. The proposed paid-host deployment and OAuth connection implementation have been removed from this free calendar workflow.
+
+## Refresh an older cached app (12.0.1)
+
+Older cache-first service workers can keep an existing tab on the original download-based calendar UI. Open `https://adoblake.github.io/2DAY-APP/update.html` to unregister this app's worker, remove its `2day-` caches, and load the release-marked page. This does not clear localStorage, profiles, or journey progress. Profile also includes a Refresh app files link and version number. New worker registration bypasses the HTTP script cache, and controlled pages reload once when an updated worker takes control. Recovery was tested in Chromium by reproducing the old cache-first worker, confirming a normal reload stayed stale, then confirming recovery loaded calendar links while preserving the journey ID and completed meal.
