@@ -63,3 +63,7 @@ Use the GitHub Pages URL for access and QR sharing. The optional Node server is 
 ## Refresh an older cached app (12.0.1)
 
 Older cache-first service workers can keep an existing tab on the original download-based calendar UI. Open `https://adoblake.github.io/2DAY-APP/update.html` to unregister this app's worker, remove its `2day-` caches, and load the release-marked page. This does not clear localStorage, profiles, or journey progress. Profile also includes a Refresh app files link and version number. New worker registration bypasses the HTTP script cache, and controlled pages reload once when an updated worker takes control. Recovery was tested in Chromium by reproducing the old cache-first worker, confirming a normal reload stayed stale, then confirming recovery loaded calendar links while preserving the journey ID and completed meal.
+
+## Program guidance acceptance (12.0.2)
+
+Home shows a compact Review & Accept Program Guidance control. The full current-program guidance and source links open in an accessible modal. Explicit acceptance stores the guidance version and timestamp for that program on the device; closing/Not now does not accept. The accepted link remains available for review. A different program requires its own acceptance. This is an acknowledgement of general wellness guidance, not confirmation of medical suitability or a medical/legal waiver. Browser validation covered dismissal, keyboard focus, persisted acceptance, and program changes.

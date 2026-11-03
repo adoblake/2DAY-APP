@@ -1,5 +1,5 @@
-const CACHE = '2day-v12.0.1-free-calendar';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './assets/programs.js', './assets/share.js', './assets/calendar.js', './assets/calendar-links.js', './assets/app-update.js', './assets/vendor/qrcode.js'];
+const CACHE = '2day-v12.0.2-guidance-modal';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './assets/programs.js', './assets/share.js', './assets/calendar.js', './assets/calendar-links.js', './assets/app-update.js', './assets/program-acceptance.js', './assets/vendor/qrcode.js'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL.map(path => new Request(path, {cache:'reload'})))).then(() => self.skipWaiting()));
 });

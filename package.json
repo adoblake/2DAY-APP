@@ -1,6 +1,6 @@
 {
   "name": "2day-daily-meal",
-  "version": "12.0.1",
+  "version": "12.0.2",
   "private": true,
   "type": "module",
   "engines": { "node": ">=22" },
